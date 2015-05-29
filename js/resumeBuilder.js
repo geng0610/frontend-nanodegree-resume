@@ -59,8 +59,8 @@ var work = {
         }
     ]
 };
-var project = {
-    "project": [
+var projects = {
+    "projects": [
         {
             "title": "project1",
             "dates": "2015",
@@ -75,14 +75,14 @@ var project = {
             "dates": "2014",
             "description": "this is project 2",
             "images": [
-                "197x148.gif",
+                "images/197x148.gif",
                 "images/fry.jpg"
             ]
         }
     ]
 };
 var bio = {
-    "name": "Geng",
+    "name": "Geng Tan",
     "role": "MBA Candidate, Cornell Tech",
     "welcomeMessage": "Welcome to my interactive resume.",
     "contacts": {
@@ -104,7 +104,7 @@ var education = {
             "name": "Cornell",
             "location": "new york",
             "degree": "MBA",
-            "major": [
+            "majors": [
                 "MBA"
             ],
             "dates": "2014-2015",
@@ -112,9 +112,9 @@ var education = {
         },
         {
             "name": "MIT",
-            "location": "Cambridge",
+            "location": "Cambridge, MA",
             "degree": "BA",
-            "major": [
+            "majors": [
                 "MechE",
                 "Management"
             ],
@@ -122,7 +122,7 @@ var education = {
             "url": "web.mit.edu"
         }
     ],
-    "onlineCourses": [
+    "onlineClasses": [
         {
             "title": "Nano-Degree",
             "school": "Udacity",
@@ -132,14 +132,49 @@ var education = {
     ]
 };
 
-function displayWork(){
+education.display = function(){
+    for(school in education.schools){
+        $("#education").append(HTMLschoolStart);
+        var formattedSchoolName = HTMLschoolName.replace("%data%", education.schools[school].name);
+        var formattedSchoolDegree = HTMLschoolDegree.replace("%data%", education.schools[school].degree);
+        $(".education-entry:last").append(formattedSchoolName+formattedSchoolDegree);
+        var formattedSchoolDates = HTMLschoolDates.replace("%data%", education.schools[school].dates);
+        $(".education-entry:last").append(formattedSchoolDates);
+        var formattedSchoolLocation = HTMLschoolLocation.replace("%data%", education.schools[school].location);
+        $(".education-entry:last").append(formattedSchoolLocation);
+        if (education.schools[school].majors.length > 0) {
+            for(major in education.schools[school].majors){
+                var formattedMajor = HTMLschoolMajor.replace("%data%", education.schools[school].majors[major]);
+                $(".education-entry:last").append(formattedMajor);
+            }
+        };
+    }
+    if (education.onlineClasses) {
+        $(".education-entry:last").append(HTMLonlineClasses);
+        for (onlineClass in education.onlineClasses){
+            //$("#education").append(HTMLonlineStart);
+            var formattedOnlineTitle = HTMLonlineTitle.replace("%data%", education.onlineClasses[onlineClass].title);
+            var formattedOnlineSchool = HTMLonlineSchool.replace("%data%", education.onlineClasses[onlineClass].school);
+            $(".education-entry:last").append(formattedOnlineTitle+formattedOnlineSchool);
+            var formattedOnlineDates = HTMLonlineDates.replace("%data%", education.onlineClasses[onlineClass].dates);
+            $(".education-entry:last").append(formattedOnlineDates);
+            var formattedOnlineURL = HTMLonlineURL.replace("%data%", education.onlineClasses[onlineClass].url);
+            $(".education-entry:last").append(formattedOnlineURL);
+        }
+    }
+}
 
-if (bio){
+
+education.display(); 
+
+bio.display = function(){
+    if (bio){
 	$("#header").prepend(HTMLwelcomeMsg.replace("%data%",bio.welcomeMessage));
 	$("#header").prepend(HTMLbioPic.replace("%data%",bio.image));
 	$("#header").prepend(HTMLheaderRole.replace("%data%",bio.role));
 	$("#header").prepend(HTMLheaderName.replace("%data%",bio.name));
 };
+
 
 //$("#header").prepend(HTMLheaderName.replace("%data%",bio.name));
 
@@ -165,7 +200,12 @@ if (bio.skills.length>0){
 	$("#header").append(HTMLskillsStart);
 	$("#skills").append(HTMLskills.replace("%data%",bio.skills));
 };
+};
 
+bio.display();
+
+
+work.display = function(){
 for (job in work.jobs){
 	$("#workExperience").append(HTMLworkStart);
 	var formattedEmployer = HTMLworkEmployer.replace("%data%", work.jobs[job].employer);
@@ -175,13 +215,53 @@ for (job in work.jobs){
 	var formattedDescription = HTMLworkDescription.replace("%data%", work.jobs[job].description);
 	var formattedEmployerTitle = formattedEmployer +formattedTitle+formattedDates+formattedLocation+formattedDescription;
 	$(".work-entry:last").append(formattedEmployerTitle);
-}
+};
 };
 
-displayWork();
+work.display();
 
 $(document).click(function(loc){
 	var x = loc.pageX;
 	var y = loc.pageY;
 	logClicks(x,y);
 });
+
+function inName(name){
+    var name=name.trim().split(" ");
+    console.log(name);
+    name[1]=name[1].toUpperCase();
+    name[0]=name[0].slice(0,1).toUpperCase()+name[0].slice(1).toLowerCase();
+    return name[0]+" "+name[1];
+}
+
+$("#main").append(internationalizeButton);
+
+
+projects.display = function(){
+    for(project in projects.projects){
+        $("#projects").append(HTMLprojectStart);
+
+        var formattedTitle = HTMLprojectTitle.replace("%data%", projects.projects[project].title);
+        $(".project-entry:last").append(formattedTitle);
+
+        var formattedDates = HTMLprojectDates.replace("%data%", projects.projects[project].dates);
+        $(".project-entry:last").append(formattedDates);
+
+        var formattedDescription = HTMLprojectDescription.replace("%data%", projects.projects[project].description);
+        $(".project-entry:last").append(formattedDescription);
+
+        if (projects.projects[project].images.length > 0) {
+            for(image in projects.projects[project].images){
+                var formattedImage = HTMLprojectImage.replace("%data%", projects.projects[project].images[image]);
+                $(".project-entry:last").append(formattedImage);
+            }
+        };
+    }
+}
+
+
+projects.display(); 
+
+$("#mapDiv").append(googleMap);
+
+
